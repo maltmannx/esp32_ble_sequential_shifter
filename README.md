@@ -5,8 +5,8 @@ I simplify the code and manage to make it possible running on a Expressif ESP32 
 ## Dependency and Library
 https://github.com/lemmingDev/ESP32-BLE-Gamepad  
 This library turns ESP32 a BLE gamepad that fits multiple scenarios.
-## Function
-The original code will turn ESP32 a bluetooth gamepad. When device paired, the board listens to 2 pins input (D25 and D34) as shifting up and down. The on-board led blink twice for shifting up, and once for down. You can modify the io ports and functions to your like.
+## Functions
+The original code will turn ESP32 a bluetooth gamepad. When device paired, the board listens to 2 pins input (D25 and D34) as shifting up and down. The on-board led blink twice for shifting up, and once for down. When long-pressing the button (default 800ms), 2 extra physical buttons will be triggered. You can modify the io ports and functions to your like.
 
 ## Usage
 + Git clone or download the zip file and decompress.
@@ -15,10 +15,12 @@ The original code will turn ESP32 a bluetooth gamepad. When device paired, the b
 + Modify sequential_shifter.cpp that fits your perfers.
 + Connect the board and choose the right com port.
 + Build and upload the ROM (hold boot button).
-+ Test functions and soldering.
++ Test functions and assembling.
++ Bind keys in game.
 
 ## Components needed (Chinese ver.)
 ![components table](images/image.png)
+Sheets are attached above.
 
 ## About 3D printing parts
 I slightly adjust the printing parameters. They're about 20% heavier but more stong and reliable. If you hava a BambuLab printer, you can simply import the .3mf file and start printing with PLA-Matt. For any non-bambulab devices, here's the per-component settings:
@@ -31,7 +33,7 @@ I slightly adjust the printing parameters. They're about 20% heavier but more st
 **Total Printing time: 13h13m**
 
 ## Acknowledgements
- Introducing my friend and personal sim-racing coach @Sanchez. I will never made it without his support.  
+ Introducing my friend and personal sim-racing coach @SanchezYao. I will never made it without his support.  
  Special thanks to [BambuLab](https://bambulab.com/en) for a new P1SC printer and filaments. There products are one of the most reliable devices you can find in current days.
 
 
