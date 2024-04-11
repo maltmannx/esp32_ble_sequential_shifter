@@ -9,7 +9,7 @@ BleGamepad bleGamepad("ESP32 BLE Shifter", "Espressif", 100);
 
 byte previousButtonStates[numOfButtons];
 byte currentButtonStates[numOfButtons];
-byte buttonPins[numOfButtons] = {5, 25};
+byte buttonPins[numOfButtons] = {25, 34};
 byte physicalButtons[numOfButtons] = {1, 2};
 
 void blink_led(int time)
@@ -45,6 +45,7 @@ void setup()
 
 void loop()
 {
+
     if (bleGamepad.isConnected())
     {
         for (byte currentIndex = 0; currentIndex < numOfButtons; currentIndex++)
@@ -61,10 +62,12 @@ void loop()
                     {
                     case 0:
                         blink_led(2);
+                        
                         break;
 
                     default:
                         blink_led(1);
+                        Serial.println(currentIndex);
                         break;
                     }
                 }
