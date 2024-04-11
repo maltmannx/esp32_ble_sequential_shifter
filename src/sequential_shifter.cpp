@@ -9,8 +9,8 @@ BleGamepad bleGamepad("ESP32 BLE Shifter", "Espressif", 100);
 
 byte previousButtonStates[numOfButtons];
 byte currentButtonStates[numOfButtons];
-byte buttonPins[numOfButtons] = {25, 34};
-byte physicalButtons[numOfButtons] = {1, 2};
+byte shiftButtonPins[numOfButtons] = {25, 34};
+byte shiftPhysicalButtons[numOfButtons] = {1, 2};
 
 void blink_led(int time)
 {
@@ -30,7 +30,8 @@ void setup()
 
     for (byte currentPinIndex = 0; currentPinIndex < numOfButtons; currentPinIndex++)
     {
-        pinMode(buttonPins[currentPinIndex], INPUT_PULLUP);
+        // shifter buttons
+        pinMode(shiftButtonPins[currentPinIndex], INPUT_PULLUP);
         previousButtonStates[currentPinIndex] = HIGH;
         currentButtonStates[currentPinIndex] = HIGH;
     }
@@ -50,30 +51,28 @@ void loop()
     {
         for (byte currentIndex = 0; currentIndex < numOfButtons; currentIndex++)
         {
-            currentButtonStates[currentIndex] = digitalRead(buttonPins[currentIndex]);
+            currentButtonStates[currentIndex] = digitalRead(shiftButtonPins[currentIndex]);
 
             if (currentButtonStates[currentIndex] != previousButtonStates[currentIndex])
             {
                 if (currentButtonStates[currentIndex] == LOW)
                 {
-                    bleGamepad.press(physicalButtons[currentIndex]);
+                    bleGamepad.press(shiftPhysicalButtons[currentIndex]);
 
-                    switch (physicalButtons[currentIndex])
+                    switch (currentIndex)
                     {
                     case 0:
                         blink_led(2);
-                        
                         break;
 
                     default:
                         blink_led(1);
-                        Serial.println(currentIndex);
                         break;
                     }
                 }
                 else
                 {
-                    bleGamepad.release(physicalButtons[currentIndex]);
+                    bleGamepad.release(shiftPhysicalButtons[currentIndex]);
                 }
             }
         }
