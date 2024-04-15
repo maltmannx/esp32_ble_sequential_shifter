@@ -1,125 +1,59 @@
+/*
+ * A simple sketch that maps a single pin on the ESP32 to a single button on the controller
+ */
+
 #include <Arduino.h>
 #include <BleGamepad.h> // https://github.com/lemmingDev/ESP32-BLE-Gamepad
 
-// useage: BleGamepad(std::string deviceName = "ESP32 BLE Gamepad", std::string deviceManufacturer = "Espressif", uint8_t batteryLevel = 100);
-BleGamepad bleGamepad("ESP32 BLE Shifter", "Espressif", 100);
+#define BUTTONPIN1 5
+#define BUTTONPIN2 21
+ // Pin button is attached to
 
-#define numOfButtons 2
-#define numOfLongPressButtons 2
-#define LED_GPIO 2 // change it to your (on-board)LED pin
 
-byte previousButtonStates[numOfButtons];
-byte currentButtonStates[numOfButtons];
+BleGamepad bleGamepad;
 
-byte shiftButtonPins[numOfButtons] = {25, 34};
-byte shiftPhysicalButtons[numOfButtons] = {1, 2};
-
-byte longPressPhysicalButtons[numOfLongPressButtons] = {3, 4};
-byte buttonPressStartTime[numOfButtons];
-
-void blink_led(int time, int lit, int unlit)
-{
-    for (int index = 0; index <= time; index++)
-    {
-        digitalWrite(LED_GPIO, HIGH);
-        delay(lit);
-        digitalWrite(LED_GPIO, LOW);
-        delay(unlit);
-    }
-}
+int previousButton1State = HIGH;
+int previousButton2State = HIGH;
 
 void setup()
 {
-
-    pinMode(LED_GPIO, OUTPUT);
-
-    for (byte currentPinIndex = 0; currentPinIndex < numOfButtons; currentPinIndex++)
-    {
-        // shifter buttons
-        pinMode(shiftButtonPins[currentPinIndex], INPUT_PULLUP);
-        previousButtonStates[currentPinIndex] = HIGH;
-        currentButtonStates[currentPinIndex] = HIGH;
-    }
-
-    BleGamepadConfiguration bleGamepadConfig;
-    bleGamepadConfig.setAutoReport(false);
-    bleGamepadConfig.setButtonCount(numOfButtons);
-    bleGamepad.begin(&bleGamepadConfig);
-    // changing bleGamepadConfig after the begin function has no effect, unless you call the begin function again
-
-    if (bleGamepad.isConnected())
-    {
-        blink_led(5, 50, 50);
-    }
-    
+    pinMode(BUTTONPIN1, INPUT_PULLUP);
+    pinMode(BUTTONPIN2, INPUT_PULLUP);
+    bleGamepad.begin();
 }
 
 void loop()
 {
-
     if (bleGamepad.isConnected())
     {
-        for (byte currentIndex = 0; currentIndex < numOfButtons; currentIndex++)
+
+        int currentButton1State = digitalRead(BUTTONPIN1);
+        int currentButton2State = digitalRead(BUTTONPIN2);
+
+        if (currentButton1State != previousButton1State)
         {
-            currentButtonStates[currentIndex] = digitalRead(shiftButtonPins[currentIndex]);
-
-            if (currentButtonStates[currentIndex] != previousButtonStates[currentIndex])
+            if (currentButton1State == LOW)
             {
-                if (currentButtonStates[currentIndex] == LOW)
-                {
-                    bleGamepad.press(shiftPhysicalButtons[currentIndex]);
-                    buttonPressStartTime[currentIndex] = millis();
-
-                    switch (currentIndex)
-                    {
-                    case 0:
-                        blink_led(2, 50, 50);
-                        break;
-
-                    case 1:
-                        blink_led(1, 50, 50);
-
-                    default:
-                        break;
-                    }
-                }
-                else
-                {
-                    bleGamepad.release(shiftPhysicalButtons[currentIndex]);
-
-                    // long press logic
-                    unsigned long buttonPressDuration = millis() - buttonPressStartTime[currentIndex];
-
-                    if (buttonPressDuration >= 800)
-                    {
-                        switch (currentIndex)
-                        {
-                        case 0:
-                            bleGamepad.press(longPressPhysicalButtons[currentIndex]);
-                            blink_led(1, 500, 0);
-                            break;
-                        case 1:
-                            bleGamepad.press(longPressPhysicalButtons[currentIndex]);
-                            blink_led(3, 50, 50);
-                        default:
-                            break;
-                        }
-                    }
-                    bleGamepad.release(longPressPhysicalButtons[currentIndex]);
-                }
+                bleGamepad.press(BUTTON_1);
+            }
+            else
+            {
+                bleGamepad.release(BUTTON_1);
             }
         }
-
-        if (currentButtonStates != previousButtonStates)
+                if (currentButton2State != previousButton2State)
         {
-            for (byte currentIndex = 0; currentIndex < numOfButtons; currentIndex++)
+            if (currentButton2State == LOW)
             {
-                previousButtonStates[currentIndex] = currentButtonStates[currentIndex];
+                bleGamepad.press(BUTTON_2);
             }
-
-            bleGamepad.sendReport();
+            else
+            {
+                bleGamepad.release(BUTTON_2);
+            }
         }
-
-        delay(20);
+        previousButton1State = currentButton1State;
+        previousButton2State = currentButton2State;
+        bleGamepad.sendReport();
     }
 }
