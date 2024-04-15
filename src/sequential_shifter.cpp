@@ -3,8 +3,7 @@
 
 #define BUTTONPIN1 5
 #define BUTTONPIN2 21
- // Pin button is attached to
-
+// Pin button is attached to
 
 BleGamepad bleGamepad;
 
@@ -23,33 +22,27 @@ void loop()
     if (bleGamepad.isConnected())
     {
 
-        int currentButton1State = digitalRead(BUTTONPIN1);
-        int currentButton2State = digitalRead(BUTTONPIN2);
-
-        if (currentButton1State != previousButton1State)
+        int currentButtonState[] = {digitalRead(BUTTONPIN1), digitalRead(BUTTONPIN2)};
+        int previousButtonState[] = {previousButton1State, previousButton2State};
+        int BUTTON[] = {BUTTON_1, BUTTON_2};
+        int size = sizeof(currentButtonState) / sizeof(currentButtonState[0]);
+        for (int i = 0; i < size; i++)
         {
-            if (currentButton1State == LOW)
+            if (currentButtonState[i] != previousButtonState[i])
             {
-                bleGamepad.press(BUTTON_1);
-            }
-            else
-            {
-                bleGamepad.release(BUTTON_1);
+                if (currentButtonState[i] == LOW)
+                {
+                    bleGamepad.press(BUTTON[i]);
+                }
+                else
+                {
+                    bleGamepad.release(BUTTON[i]);
+                }
             }
         }
-                if (currentButton2State != previousButton2State)
-        {
-            if (currentButton2State == LOW)
-            {
-                bleGamepad.press(BUTTON_2);
-            }
-            else
-            {
-                bleGamepad.release(BUTTON_2);
-            }
-        }
-        previousButton1State = currentButton1State;
-        previousButton2State = currentButton2State;
+        
+        previousButtonState[0] = currentButtonState[0];
+        previousButtonState[1] = currentButtonState[1];
         bleGamepad.sendReport();
     }
 }
