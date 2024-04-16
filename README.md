@@ -27,7 +27,7 @@ I slightly adjust the printing parameters. They're about 20% heavier but more st
 + MainBody: 4 walls, 50% adaptive cubic infill with support
 + ShifterShaft: 4 walls, 50% adaptive cubic infill with support
 + Knob: 4 walls, 100% infill
-+ Pin, cap, spacer, and bottom cover: 3 walls, 100% infill
++ Spacer, and bottom cover: 3 walls, 100% infill
 
 **Total filaments used: 650.65g**  
 **Total Printing time: 13h13m**
